@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth.routes');
 
 // Conectamos la base de datos
@@ -15,6 +16,8 @@ app.use(express.urlencoded({ extended: false }));
 // JSON middleware
 app.use(express.json());
 
+// Cookie parser
+app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 
