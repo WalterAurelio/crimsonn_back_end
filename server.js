@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3000;
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth.routes');
+const verifyJWT = require('./middlewares/verifyJWT');
+const profileRoutes = require('./routes/profile.routes');
 
 // Conectamos la base de datos
 connectDatabase();
@@ -20,6 +22,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+
+// Verify JWT
+app.use(verifyJWT);
+
+app.use('/profile', profileRoutes);
 
 // Escuchamos el puerto
 mongoose.connection.once('open', () => {

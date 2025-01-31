@@ -50,14 +50,14 @@ const logIn = async (req, res) => {
 
     const roles = Object.values(foundUser.roles);
     const accessToken = jwt.sign(
-      { username: foundUser.username, roles },
+      { email: foundUser.email, roles },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '5s' }
+      { expiresIn: '30s' }
     );
     const newRefreshToken = jwt.sign(
-      { username: foundUser.username },
+      { email: foundUser.email },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: '60s' }
+      { expiresIn: '1d' }
     );
 
     let newRefreshTokenArray = !cookies?.jwt
@@ -120,7 +120,7 @@ const refreshToken = async (req, res) => {
       async (err, decoded) => {
         if (err) return res.status(403).json({ message: 'El refresh token recibido está vencido y además no corresponde a ningún usuario registrado.' });
 
-        const hackedUser = await User.findOne({ username: decoded.username });
+        const hackedUser = await User.findOne({ email: decoded.email });
         hackedUser.refreshToken = [];
         await hackedUser.save();
       }
@@ -134,7 +134,7 @@ const refreshToken = async (req, res) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     async (err, decoded) => {
-      if (err || foundUser.username !== decoded.username) {
+      if (err || foundUser.email !== decoded.email) {
         foundUser.refreshToken = [...newRefreshTokenArray];
         await foundUser.save();
         return res.status(403).json({ message: 'El refresh token recibido está vencido.' });
@@ -142,14 +142,14 @@ const refreshToken = async (req, res) => {
 
       const roles = Object.values(foundUser.roles);
       const accessToken = jwt.sign(
-        { username: foundUser.username, roles },
+        { email: foundUser.email, roles },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '5s' }
+        { expiresIn: '30s' }
       );
       const newRefreshToken = jwt.sign(
-        { username: foundUser.username },
+        { email: foundUser.email },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '1d' }
       );
       foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
       await foundUser.save();

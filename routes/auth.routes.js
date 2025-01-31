@@ -5,6 +5,6 @@ const { registerAccount, logIn, logOut, refreshToken } = require('../controllers
 router.post('/register', registerAccount);
 router.post('/login', logIn);
 router.get('/logout', logOut);
-router.get('/refresh', refreshToken);
+router.get('/refresh-token', refreshToken);
 
 module.exports = router;
